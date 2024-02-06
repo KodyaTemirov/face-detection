@@ -45,7 +45,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<p v-if="isCompatibleBrowser">
+	<p v-if="isCompatibleBrowser" class="text-3xl font-bold underline">
 		{{
 			cameraAvailable && microphoneAvailable
 				? 'Веб-камера и микрофон доступны!'

@@ -1,7 +1,9 @@
 <script setup>
 import WebCam from './components/WebCam.vue';
-
 import { ref, onMounted } from 'vue';
+
+const cameraAvailable = ref(false);
+const microphoneAvailable = ref(false);
 
 const checkMediaDevicesCompatibility = () => {
 	return !!navigator.mediaDevices;
@@ -30,13 +32,15 @@ const checkCameraAndMicrophoneAvailability = async (
 };
 
 const isCompatibleBrowser = checkMediaDevicesCompatibility();
-const cameraAvailable = ref(false);
-const microphoneAvailable = ref(false);
 
 onMounted(() => {
 	if (isCompatibleBrowser) {
 		checkCameraAndMicrophoneAvailability(cameraAvailable, microphoneAvailable);
+		runSpeedTest();
 	}
+	setInterval(() => {
+		runSpeedTest();
+	}, 10000);
 });
 </script>
 
@@ -48,6 +52,7 @@ onMounted(() => {
 				: 'Веб-камера или микрофон не доступны.'
 		}}
 	</p>
+
 	<p v-else>
 		Ваш браузер устарел. Пожалуйста, используйте современный браузер для
 		проверки камеры и микрофона.

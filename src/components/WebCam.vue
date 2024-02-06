@@ -114,15 +114,18 @@ onMounted(async () => {
 
 		window.requestAnimationFrame(predictWebcam);
 	}
-
 });
 </script>
 
 <template>
 	<div :class="{ invisible: isActive, video: true }" id="demos">
 		<video ref="webcam" autoplay playsinline></video>
-		<canvas ref="canvas" class="output_canvas" id="output_canvas"
-			style="position: absolute; left: 0px; top: 0px"></canvas>
+		<canvas
+			ref="canvas"
+			class="output_canvas"
+			id="output_canvas"
+			style="position: absolute; left: 0px; top: 0px"
+		></canvas>
 	</div>
 	<ul class="blend-shapes-list" ref="shapes">
 		<li v-for="shape in blendShapes.value" :key="shape.index">

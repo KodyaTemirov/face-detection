@@ -1,17 +1,21 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import './style.css';
 import App from './App.vue';
 import globalComponents from './components/global';
 import { router } from './routes';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { createPinia } from 'pinia';
+import { useAuthStore } from '@stores/AuthStore';
 
-const pinia = createPinia();
-const app = createApp(App)
-	.use(router)
-	.component('font-awesome-icon', FontAwesomeIcon);
+const app = createApp(App);
 
-app.use(pinia);
-app.use(globalComponents);
+app.use(createPinia());
+
+const authStore = useAuthStore();
+console.log();
+authStore.isAuthenticated = !!localStorage.getItem('auth_token');
+
+app.use(router);
+app.use(globalComponents).component('font-awesome-icon', FontAwesomeIcon);
 
 app.mount('#app');

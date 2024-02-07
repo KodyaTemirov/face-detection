@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 export const useAuthStore = defineStore('authStore', {
 	state: () => ({
@@ -25,11 +28,13 @@ export const useAuthStore = defineStore('authStore', {
 					}
 				);
 
-				const decoded = jwtDecode(data.data.access_token);
-				const userToken = data.data.access_token;
+				const decoded = await jwtDecode(data.data.access_token);
+				const userToken = await data.data.access_token;
 
 				this.isAuthenticated = true;
 				this.user = { ...decoded, ...userToken };
+
+				localStorage.setItem('auth_token', userToken);
 			} catch (error) {
 				console.log(
 					error.response ? error.response.data.message : 'Something went wrong'
@@ -39,6 +44,7 @@ export const useAuthStore = defineStore('authStore', {
 		logout() {
 			this.isAuthenticated = false;
 			this.user = null;
+			localStorage.removeItem('token');
 		},
 	},
 });

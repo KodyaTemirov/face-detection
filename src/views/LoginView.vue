@@ -1,16 +1,29 @@
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
+import { ref, onBeforeMount } from 'vue';
 import { useAuthStore } from '@stores/AuthStore';
-
+import { useRouter } from 'vue-router';
 const username = ref('k.temirov');
 const password = ref('k.temirov@#333');
+const router = useRouter();
 const authStore = useAuthStore();
 
-const login = () => {
-	authStore.login(username.value, password.value);
+const redirectIsAuth = () => {
+	if (authStore.isAuthenticated) {
+		router.push('/');
+	}
 };
 
+const login = async () => {
+	if (!authStore.isAuthenticated) {
+		await authStore.login(username.value, password.value);
+		redirectIsAuth();
+	}
+
+};
+
+onBeforeMount(() => {
+	redirectIsAuth();
+})
 
 </script>
 

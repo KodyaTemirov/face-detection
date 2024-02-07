@@ -1,28 +1,17 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useAuthStore } from '@stores/AuthStore';
 
 const username = ref('k.temirov');
 const password = ref('k.temirov@#333');
+const authStore = useAuthStore();
 
-const login = async () => {
-	const formData = new FormData();
-	formData.append('username', username.value);
-	formData.append('password', password.value);
-
-	const { data } = await axios.post(
-		import.meta.env.VITE_API_URL + '/services/platon-auth/api/login',
-		formData,
-		{
-			headers: {
-				'Device-Id':
-					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-			},
-		}
-	);
-
-	console.log(data);
+const login = () => {
+	authStore.login(username.value, password.value);
 };
+
+
 </script>
 
 <template>

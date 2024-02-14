@@ -12,7 +12,6 @@ const app = createApp(App);
 app.use(createPinia());
 
 const authStore = useAuthStore();
-console.log();
 authStore.isAuthenticated = !!localStorage.getItem('auth_token');
 
 app.use(router);

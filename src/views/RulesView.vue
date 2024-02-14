@@ -32,9 +32,9 @@ onMounted(async () => {
 <template>
 	<h1 class="text-2xl font-bold pb-8">Условия проведения мероприятия</h1>
 	<div class="responsive-iframe-container">
-		<!-- <iframe class="responsive-iframe" :src="urlEmbed" title="YouTube video player" frameborder="0"
+		<iframe class="responsive-iframe" :src="urlEmbed" title="YouTube video player" frameborder="0"
 			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-			allowfullscreen></iframe> -->
+			allowfullscreen></iframe>
 	</div>
 </template>
 <style>

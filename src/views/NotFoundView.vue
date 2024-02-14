@@ -3,6 +3,9 @@
 </script>
 
 <template>
+	<router-link to="/user/e0296f10-7a7f-4d45-a63f-356b38355e9b">
+		Start test
+	</router-link>
 	<div class="text-center">
 		<p class="text-base font-semibold text-indigo-600">404</p>
 		<h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Page not found</h1>

@@ -1,57 +1,52 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, defineEmits, ref } from 'vue';
+import { convertToEmbedLink } from '@utils/convertToEmbedLink';
 
+const emit = defineEmits(['change-step']);
 
+const changeStep = () => {
+	emit('change-step');
+};
+
+const isChecked = ref(false);
 const props = defineProps([
 	'url',
 ]);
 
-const urlEmbed = ref(null);
-
-function convertToEmbedLink(youtubeLink) {
-	// Проверяем, является ли переданная ссылка корректной ссылкой YouTube
-	const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/)|youtu\.be\/)/;
-	if (!youtubeRegex.test(youtubeLink)) {
-		console.error('Некорректная ссылка YouTube');
+const urlEmbed = computed(() => {
+	if (!props.url) {
 		return null;
 	}
 
-	// Извлекаем идентификатор видео из ссылки
-	const videoId = youtubeLink.match(/[a-zA-Z0-9_-]{11}/)[0];
-
-	// Формируем embed-ссылку
-	const embedLink = `https://www.youtube.com/embed/${videoId}`;
-	urlEmbed.value = embedLink;
-}
-onMounted(async () => {
-	await convertToEmbedLink(props.url);
+	return convertToEmbedLink(props.url);
 });
+
 
 </script>
 
 <template>
 	<h1 class="text-2xl font-bold pb-8">Условия проведения мероприятия</h1>
-	<div class="responsive-iframe-container">
-		<iframe class="responsive-iframe" :src="urlEmbed" title="YouTube video player" frameborder="0"
+	<div class="relative overflow-hidden" style="padding-top: 56.25%;">
+		<iframe class="absolute top-0 left-0 w-full h-full border-0" :src="urlEmbed" title="YouTube video player"
+			frameborder="0"
 			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 			allowfullscreen></iframe>
 	</div>
-</template>
-<style>
-/* Стили для резинового iframe */
-.responsive-iframe-container {
-	position: relative;
-	overflow: hidden;
-	padding-top: 56.25%;
-	/* Высота в процентах (16:9 соотношение сторон) */
-}
 
-.responsive-iframe {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	border: 0;
-}
-</style>
+	<div class="relative flex gap-x-3">
+		<div class="flex h-6 items-center">
+			<input id="comments" name="comments" type="checkbox" v-model="isChecked"
+				class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+		</div>
+		<div class="text-sm leading-6">
+			<label for="comments" class="font-medium text-gray-900">Я ознакомлен(а) с правилами</label>
+		</div>
+	</div>
+
+
+	<button @click="changeStep" :disabled="!isChecked"
+		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8 ">
+		Далее
+	</button>
+</template>
+ 

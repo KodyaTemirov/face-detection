@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,6 +8,13 @@ const videoWidth = 552; // Желаемая ширина области виде
 const videoHeight = 552; // Желаемая высота области видео
 const webcam = ref(null);
 const photo = ref(null);
+
+const emit = defineEmits(['change-step']);
+
+const changeStep = () => {
+	emit('change-step');
+};
+
 
 onMounted(() => {
 	setupWebcam();
@@ -52,6 +59,10 @@ const takePhoto = () => {
 		</div>
 		<img v-if="photo" :src="photo" :style="{ width: `${videoSize}px`, height: `${videoSize}px` }" alt="Снимок">
 	</div>
+	<button @click="changeStep"
+		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8 ">
+		Далее
+	</button>
 </template>
 
 <style>

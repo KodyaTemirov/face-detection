@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive, defineProps } from 'vue';
+import { ref, onMounted, reactive, defineProps, defineEmits } from 'vue';
 import Messages from '@components/Messages.vue';
 
 import { createFaceLandmarker } from '@utils/createFaceLandmarker';
@@ -9,6 +9,13 @@ import { determineDirection } from '@utils/determineDirection';
 const props = defineProps([
 	'url',
 ]);
+
+const emit = defineEmits(['change-step']);
+
+const changeStep = () => {
+	emit('change-step');
+};
+
 
 const isActive = ref(true);
 const canvas = ref(null);
@@ -33,7 +40,6 @@ onMounted(async () => {
 	} catch (error) {
 		console.error('Error accessing webcam:', error);
 	}
-
 	let lastVideoTime = -1;
 
 	function predictWebcam() {
@@ -69,6 +75,7 @@ onMounted(async () => {
 		window.requestAnimationFrame(predictWebcam);
 	}
 });
+
 </script>
 
 <template>
@@ -78,6 +85,10 @@ onMounted(async () => {
 		<canvas ref="canvas" class="object-cover w-full h-full" id="output_canvas"
 			style="position: absolute; left: 0px; top: 0px"></canvas>
 	</div>
+	<button @click="changeStep"
+		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8 ">
+		Закончить
+	</button>
 </template>
  
 

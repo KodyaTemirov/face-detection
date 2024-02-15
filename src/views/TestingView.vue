@@ -2,8 +2,7 @@
 import { ref, onMounted, reactive, defineProps, defineEmits } from 'vue';
 import Messages from '@components/Messages.vue';
 
-import { createFaceLandmarker } from '@utils/createFaceLandmarker';
-import { rodriguesRotationVectorFromMatrix, addNewMessage } from '@utils/utils';
+import { createFaceLandmarker, rodriguesRotationVectorFromMatrix, addNewMessage } from '@utils/faceLandmarker';
 import { determineDirection } from '@utils/determineDirection';
 
 const props = defineProps([
@@ -80,6 +79,12 @@ onMounted(async () => {
 
 <template>
 	<Messages :messages="messages" />
+	<div class="relative overflow-hidden" style="padding-top: 56.25%;">
+		<iframe class="absolute top-0 left-0 w-full h-full border-0" :src="url" title="YouTube video player" frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+			allowfullscreen></iframe>
+	</div>
+
 	<div :class="{ invisible: isActive, 'w-52 h-52 overflow-hidden rounded-full fixed right-4 bottom-4': true }" id="demos">
 		<video class="clear-both block w-full h-full object-cover" ref="webcam" autoplay playsinline></video>
 		<canvas ref="canvas" class="object-cover w-full h-full" id="output_canvas"

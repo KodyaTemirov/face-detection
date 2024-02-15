@@ -26,7 +26,6 @@ export const useAuthStore = defineStore('authStore', {
 				);
 
 				const decoded = await jwtDecode(data.data.access_token);
-				console.log(decoded);
 				const userToken = await data.data.access_token;
 
 				this.isAuthenticated = true;

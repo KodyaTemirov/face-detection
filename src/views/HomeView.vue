@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-import WebCam from '@components/WebCam.vue';
+import TestingView from '@views/TestingView.vue';
 import CheckingView from '@views/CheckingView.vue';
 import RulesView from '@views/RulesView.vue';
 import CapturePicView from '@views/CapturePicView.vue';
@@ -64,7 +64,7 @@ onMounted(fetchData);
 			<CapturePicView />
 		</div>
 		<div v-else-if="step === 4">
-			<WebCam :url="userInfo.iframe_url" />
+			<TestingView :url="userInfo.iframe_url" />
 		</div>
 		<button @click="changeStep"
 			class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8 ">

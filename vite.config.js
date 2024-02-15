@@ -21,6 +21,7 @@ export default defineConfig({
 			'@components': '/src/components/',
 			'@views': '/src/views/',
 			'@stores': '/src/stores/',
+			'@utils': '/src/utils/',
 		},
 	},
 	plugins: [vue()],

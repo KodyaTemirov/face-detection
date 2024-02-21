@@ -7,10 +7,18 @@
 			<div class="text-gray-400 mb-8">
 				<span>Шаг {{ step }} </span>
 			</div>
-			<RulesView v-if="step === 1" :url="userInfo.video_url" @change-step="changeStep" />
+			<RulesView
+				v-if="step === 1"
+				:url="userInfo.video_url"
+				@change-step="changeStep"
+			/>
 			<CheckingView v-if="step === 2" @change-step="changeStep" />
 			<CapturePicView v-if="step === 3" @change-step="changeStep" />
-			<TestingView v-if="step === 4" :url="userInfo.iframe_url" @change-step="changeStep" />
+			<TestingView
+				v-if="step === 4"
+				:url="userInfo.iframe_url"
+				@change-step="changeStep"
+			/>
 		</div>
 	</div>
 </template>
@@ -28,7 +36,7 @@ import LoadingView from '@views/LoadingView.vue';
 
 const { id } = defineProps(['id']);
 const isLoading = ref(true);
-const userInfo = ref({ 'test': 'test' });
+const userInfo = ref({ test: 'test' });
 const router = useRouter();
 const step = ref(1);
 
@@ -44,8 +52,6 @@ const fetchData = async () => {
 			`https://proctoring.platon.uz/services/platon-core/api/get_user?token=${id}`
 		);
 		const data = response.data;
-
-		console.log(data);
 
 		if (!data || !data.data) {
 			throw new Error('Invalid response format');

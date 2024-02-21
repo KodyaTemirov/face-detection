@@ -1,24 +1,21 @@
 <script setup>
+import { defineProps } from 'vue';
 
-import { ref, computed, defineEmits } from 'vue';
+// Определение props
+const props = defineProps(['disabled']);
+const emit = defineEmits(['click']);
 
-const { color } = defineProps(['color']);
-const emit = defineEmits();
-const buttonClass = computed(() => [
-	'flex', 'justify-center', 'rounded-md', 'px-3', 'py-1.5', 'text-sm', 'font-semibold', 'leading-6', 'text-white', 'shadow-sm',
-	, 'focus-visible:outline', 'focus-visible:outline-2', 'focus-visible:outline-offset-2',
-	`focus-visible:outline-${color}-600`,
-	`bg-${color}-400`,
-	`hover:bg-${color}-700`,
-	'focus:outline-none',
-	'focus:shadow-outline-blue',
-]);
-
-
+const clickHandler = () => {
+	emit('click');
+};
 </script>
 
 <template>
-	<button @click="emit('click')" :class="buttonClass">
+	<button
+		@click="clickHandler"
+		:disabled="disabled"
+		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8"
+	>
 		<slot />
 	</button>
 </template>

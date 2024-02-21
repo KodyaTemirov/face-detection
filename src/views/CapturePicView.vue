@@ -18,7 +18,6 @@ const changeStep = () => {
 	emit('change-step');
 };
 
-
 onMounted(() => {
 	setupWebcam();
 });
@@ -35,14 +34,16 @@ const setupWebcam = async () => {
 	}
 };
 
-const getUserPhotos = async (photoDataUrl) => {
+const getUserPhotos = async photoDataUrl => {
 	const formData = new FormData();
-	formData.append("photo", photoDataUrl);
-	formData.append("token", 'e0296f10-7a7f-4d45-a63f-356b38355e9b');
+	formData.append('photo', photoDataUrl);
+	formData.append('token', 'e0296f10-7a7f-4d45-a63f-356b38355e9b');
 
 	try {
-		const { data } = await axios.post("https://proctoring.platon.uz/services/platon-core/api/get/user_photos", formData);
-		console.log(data.data.info);
+		const { data } = await axios.post(
+			'https://proctoring.platon.uz/services/platon-core/api/get/user_photos',
+			formData
+		);
 		return data;
 	} catch (error) {
 		console.error(error);
@@ -61,7 +62,7 @@ const takePhoto = async () => {
 		const photoDataUrl = canvas.toDataURL('image/png');
 		photo.value = photoDataUrl;
 		takePhotoStatus.value = true;
-	};
+	}
 };
 
 const checkPhotoRequest = async () => {
@@ -69,7 +70,6 @@ const checkPhotoRequest = async () => {
 	const { info } = data;
 	const { image1, image2 } = info;
 	isFaceDetected.value = true;
-
 };
 </script>
 
@@ -78,27 +78,40 @@ const checkPhotoRequest = async () => {
 
 	<div class="flex justify-center">
 		<div class="webcam-container">
-			<video ref="webcam" autoplay></video>
-			<img v-if="photo" :src="photo" :style="{ width: `${videoSize}px`, height: `${videoSize}px` }" alt="Снимок"
-				class="absolute top-0 left-0">
+			<video
+				ref="webcam"
+				autoplay
+				:width="videoWidth"
+				:height="videoHeight"
+			></video>
+			<img
+				v-if="photo"
+				:src="photo"
+				alt="Снимок"
+				class="absolute top-0 left-0"
+			/>
 
-			<button v-if="!takePhotoStatus" @click="takePhoto"
-				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500">
+			<button
+				v-if="!takePhotoStatus"
+				@click="takePhoto"
+				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
+			>
 				<font-awesome-icon icon="fa-solid fa-camera" />
 
-				Сделать снимок</button>
+				Сделать снимок
+			</button>
 
-			<button v-else @click="checkPhotoRequest"
-				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500">
+			<button
+				v-else
+				@click="checkPhotoRequest"
+				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
+			>
 				<font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
-				Отправить снимок</button>
-
+				Отправить снимок
+			</button>
 		</div>
 	</div>
-	<button @click="changeStep" :disabled="!isFaceDetected"
-		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8 ">
-		Далее
-	</button>
+	<Button @click="changeStep" :disabled="!isFaceDetected"> Далее </Button>
 </template>
 
 <style>
@@ -116,4 +129,3 @@ const checkPhotoRequest = async () => {
 	top: 0;
 }
 </style>
- 

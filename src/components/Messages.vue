@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 			Qoidabuzarliklar
 			<span class="text-xs text-gray-600">{{ messages.length }}</span>
 		</h2>
-		<ul class="flex flex-col gap-1">
+		<ul class="flex flex-col gap-2">
 			<li
 				class="p-4 bg-red-200 rounded-md"
 				v-for="{ description, date } in messages"

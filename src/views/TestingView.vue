@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, reactive, defineProps, defineEmits } from 'vue';
 import Messages from '@components/Messages.vue';
+import TestingIframe from '@components/TestingIframe.vue';
+
 import { checkCamera, checkMicrophone } from '@utils/checkDevice';
 
 import {
@@ -10,22 +12,20 @@ import {
 import { determineDirection } from '@utils/determineDirection';
 
 const props = defineProps(['url']);
-
 const emit = defineEmits(['change-step']);
-
-const changeStep = () => {
-	emit('change-step');
-};
 
 const cameraAvailable = ref(true);
 const microphoneAvailable = ref(true);
-
 const isActive = ref(true);
 const canvas = ref(null);
 const results = reactive({});
 const webcam = ref(null);
 const messages = ref([]);
 const isDisrupted = ref(false);
+
+const changeStep = () => {
+	emit('change-step');
+};
 
 const addNewMessage = (messages, value) => {
 	if (value.disrupted) {
@@ -46,23 +46,16 @@ const addNewMessage = (messages, value) => {
 onMounted(async () => {
 	let faceLandmarker;
 
-	async function setupFaceLandmarker() {
+	const setupFaceLandmarker = async () => {
 		faceLandmarker = await createFaceLandmarker();
 		isActive.value = false;
-	}
+	};
 
 	await setupFaceLandmarker();
 
-	try {
-		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-		webcam.value.srcObject = stream;
-		webcam.value.addEventListener('loadeddata', predictWebcam);
-	} catch (error) {
-		console.error('Error accessing webcam:', error);
-	}
 	let lastVideoTime = -1;
 
-	function predictWebcam() {
+	const predictWebcam = () => {
 		canvas.value.width = webcam.value.videoWidth;
 		canvas.value.height = webcam.value.videoHeight;
 
@@ -109,7 +102,16 @@ onMounted(async () => {
 		}
 
 		window.requestAnimationFrame(predictWebcam);
+	};
+
+	try {
+		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+		webcam.value.srcObject = stream;
+		webcam.value.addEventListener('loadeddata', predictWebcam);
+	} catch (error) {
+		console.error('Error accessing webcam:', error);
 	}
+
 	setInterval(async () => {
 		cameraAvailable.value = checkCamera();
 		microphoneAvailable.value = checkMicrophone();
@@ -120,16 +122,7 @@ onMounted(async () => {
 <template>
 	<div v-if="cameraAvailable && microphoneAvailable">
 		<Messages :messages="messages" />
-		<div class="relative overflow-hidden" style="padding-top: 56.25%">
-			<iframe
-				class="absolute top-0 left-0 w-full h-full border-0"
-				:src="url"
-				title="YouTube video player"
-				frameborder="0"
-				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-				allowfullscreen
-			></iframe>
-		</div>
+		<TestingIframe :src="url" />
 
 		<div
 			:class="{
@@ -138,7 +131,6 @@ onMounted(async () => {
 				'border-red-500': isDisrupted,
 				'w-52 h-52 overflow-hidden rounded-full fixed right-4 bottom-4  border-8 border-solid': true,
 			}"
-			id="demos"
 		>
 			<video
 				class="clear-both block w-full h-full object-cover"
@@ -153,12 +145,7 @@ onMounted(async () => {
 				style="position: absolute; left: 0px; top: 0px"
 			></canvas>
 		</div>
-		<button
-			@click="changeStep"
-			class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8"
-		>
-			Закончить
-		</button>
+		<Button @click="changeStep"> Закончить </Button>
 	</div>
 	<div v-else class="text-red-500">
 		Вы нарушили правила. Из за недоступности камер либо микрофона вы

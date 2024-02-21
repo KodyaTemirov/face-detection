@@ -3,19 +3,49 @@ export function determineDirection(yaw, pitch, roll) {
 	const PITCH_THRESHOLD = 15;
 	const ROLL_THRESHOLD = 15;
 
+	const currentTime = new Date();
+
 	if (yaw < -YAW_THRESHOLD) {
-		return "O'ng tomonga qaradingiz";
+		return {
+			description: "O'ng tomonga qaradingiz",
+			date: currentTime,
+			disrupted: true,
+		};
 	} else if (yaw > YAW_THRESHOLD) {
-		return 'Chap tomonga qaradingiz.';
+		return {
+			description: 'Chap tomonga qaradingiz.',
+			date: currentTime,
+			disrupted: true,
+		};
 	} else if (pitch < -PITCH_THRESHOLD) {
-		return 'Tepaga qaradingiz.';
+		return {
+			description: 'Tepaga qaradingiz.',
+			date: currentTime,
+			disrupted: true,
+		};
 	} else if (pitch > PITCH_THRESHOLD) {
-		return 'Pastga qaradingiz';
+		return {
+			description: 'Pastga qaradingiz',
+			date: currentTime,
+			disrupted: true,
+		};
 	} else if (roll < -ROLL_THRESHOLD) {
-		return 'Chap tomonga burildingiz';
+		return {
+			description: 'Chap tomonga burildingiz',
+			date: currentTime,
+			disrupted: true,
+		};
 	} else if (roll > ROLL_THRESHOLD) {
-		return "O'ng tomonga burildingiz.";
+		return {
+			description: "O'ng tomonga burildingiz.",
+			date: currentTime,
+			disrupted: true,
+		};
 	} else {
-		return "To'g'riga qaradingiz.";
+		return {
+			description: "To'g'riga qaradingiz.",
+			date: currentTime,
+			disrupted: false,
+		};
 	}
 }

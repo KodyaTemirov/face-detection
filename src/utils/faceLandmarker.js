@@ -16,27 +16,21 @@ export async function createFaceLandmarker() {
 		numFaces: 10,
 	});
 }
+
 export function rodriguesRotationVectorFromMatrix(rotationMatrix) {
 	const trace = rotationMatrix[0] + rotationMatrix[4] + rotationMatrix[8];
-	let angle = Math.acos((trace - 1) / 2);
-	let axis = [
+	const angle = Math.acos((trace - 1) / 2);
+	const denominator = 2 * Math.sin(angle);
+
+	const axis = [
 		rotationMatrix[5] - rotationMatrix[7],
 		rotationMatrix[6] - rotationMatrix[2],
 		rotationMatrix[1] - rotationMatrix[3],
-	];
-	const denominator = 2 * Math.sin(angle);
-	axis = axis.map(component => component / denominator);
+	].map(component => component / denominator);
 
 	const rotationVector = axis.map(
 		component => (component * angle * 180) / Math.PI
 	);
-	return rotationVector;
-}
 
-export function addNewMessage(messages, value) {
-	const lastMessage = messages[messages.length - 1];
-	if (lastMessage === value) {
-		return [...messages];
-	}
-	return [...messages, value];
+	return rotationVector;
 }

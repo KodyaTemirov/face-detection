@@ -45,6 +45,8 @@ const fetchData = async () => {
 		);
 		const data = response.data;
 
+		console.log(data);
+
 		if (!data || !data.data) {
 			throw new Error('Invalid response format');
 		}
@@ -60,7 +62,6 @@ const fetchData = async () => {
 		isLoading.value = false;
 	} catch (error) {
 		console.error(error);
-		// Обработка ошибок - например, уведомление пользователя об ошибке
 	}
 };
 

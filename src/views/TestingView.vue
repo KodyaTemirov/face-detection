@@ -2,8 +2,9 @@
 import { ref, onMounted, reactive, defineProps, defineEmits } from 'vue';
 import Messages from '@components/Messages.vue';
 import TestingIframe from '@components/TestingIframe.vue';
-
 import { checkCamera, checkMicrophone } from '@utils/checkDevice';
+import { takePhoto } from '@utils/takePhoto';
+import { useToast } from 'vue-toastification';
 
 import {
 	createFaceLandmarker,
@@ -12,7 +13,9 @@ import {
 import { determineDirection } from '@utils/determineDirection';
 
 const props = defineProps(['url']);
+const toast = useToast();
 const emit = defineEmits(['change-step']);
+const photo = ref(null);
 
 const cameraAvailable = ref(true);
 const microphoneAvailable = ref(true);
@@ -115,11 +118,23 @@ onMounted(async () => {
 	setInterval(async () => {
 		cameraAvailable.value = checkCamera();
 		microphoneAvailable.value = checkMicrophone();
+		// Take photo or toast
+		if (!isDisrupted.value) {
+			const photoData = takePhoto(webcam, 192, 192);
+			console.log(photoData);
+			photo.value = await photoData;
+		} else {
+			toast.error('Kameraga qarashni maslahat beraman!!!', {
+				timeout: 4000,
+			});
+		}
 	}, 5000);
 });
 </script>
 
 <template>
+	<img v-if="photo" :src="photo" alt="Снимок" class="h-48 w-48" />
+
 	<div v-if="cameraAvailable && microphoneAvailable">
 		<Messages :messages="messages" />
 		<TestingIframe :src="url" />

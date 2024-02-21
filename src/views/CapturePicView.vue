@@ -2,6 +2,7 @@
 import { ref, onMounted, defineEmits } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCamera, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { takePhoto } from '@utils/takePhoto';
 import axios from 'axios';
 
 library.add(faCamera, faCloudArrowUp);
@@ -52,15 +53,9 @@ const getUserPhotos = async photoDataUrl => {
 	}
 };
 
-const takePhoto = async () => {
+const takePhotoHandler = async () => {
 	if (webcam.value) {
-		const canvas = document.createElement('canvas');
-		canvas.width = videoWidth;
-		canvas.height = videoHeight;
-		const context = canvas.getContext('2d');
-		context.drawImage(webcam.value, 0, 0, videoWidth * 1.3, videoHeight);
-		const photoDataUrl = canvas.toDataURL('image/png');
-		photo.value = photoDataUrl;
+		photo.value = await takePhoto(webcam, videoWidth, videoHeight);
 		takePhotoStatus.value = true;
 	}
 };
@@ -93,7 +88,7 @@ const checkPhotoRequest = async () => {
 
 			<button
 				v-if="!takePhotoStatus"
-				@click="takePhoto"
+				@click="takePhotoHandler"
 				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
 			>
 				<font-awesome-icon icon="fa-solid fa-camera" />

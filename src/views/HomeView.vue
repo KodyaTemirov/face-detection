@@ -13,7 +13,7 @@
 				@change-step="changeStep"
 			/>
 			<CheckingView v-if="step === 2" @change-step="changeStep" />
-			<CapturePicView v-if="step === 3" @change-step="changeStep" />
+			<CapturePicView :id="id" v-if="step === 3" @change-step="changeStep" />
 			<TestingView
 				v-if="step === 4"
 				:url="userInfo.iframe_url"

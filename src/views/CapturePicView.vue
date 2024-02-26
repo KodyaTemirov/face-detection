@@ -1,9 +1,14 @@
 <script setup>
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, defineEmits, defineProps } from 'vue';
+import { storeToRefs } from 'pinia';
+
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCamera, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { takePhoto } from '@utils/takePhoto';
-import axios from 'axios';
+import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
+const props = defineProps(['id']);
+
+const faceDetectionStore = useFaceDetectionStore();
 
 library.add(faCamera, faCloudArrowUp);
 const videoWidth = 552; // Желаемая ширина области видео
@@ -11,7 +16,6 @@ const videoHeight = 552; // Желаемая высота области вид�
 const webcam = ref(null);
 const photo = ref(null);
 const takePhotoStatus = ref(false);
-const isFaceDetected = ref(false);
 
 const emit = defineEmits(['change-step']);
 
@@ -35,24 +39,6 @@ const setupWebcam = async () => {
 	}
 };
 
-const getUserPhotos = async photoDataUrl => {
-	const formData = new FormData();
-	formData.append('photo', photoDataUrl);
-	formData.append('token', 'e0296f10-7a7f-4d45-a63f-356b38355e9b');
-
-	try {
-		const { data } = await axios.post(
-			'https://proctoring.platon.uz/services/platon-core/api/get/user_photos',
-			formData
-		);
-		return data;
-	} catch (error) {
-		console.error(error);
-		// Можно выбросить ошибку или вернуть что-то еще в зависимости от требований
-		throw error;
-	}
-};
-
 const takePhotoHandler = async () => {
 	if (webcam.value) {
 		photo.value = await takePhoto(webcam, videoWidth, videoHeight);
@@ -61,10 +47,7 @@ const takePhotoHandler = async () => {
 };
 
 const checkPhotoRequest = async () => {
-	const { data } = await getUserPhotos(photo.value);
-	const { info } = data;
-	const { image1, image2 } = info;
-	isFaceDetected.value = true;
+	await faceDetectionStore.faceDetect(photo.value, props.id);
 };
 </script>
 
@@ -106,7 +89,9 @@ const checkPhotoRequest = async () => {
 			</button>
 		</div>
 	</div>
-	<Button @click="changeStep" :disabled="!isFaceDetected"> Далее </Button>
+	<Button @click="changeStep" :disabled="!faceDetectionStore.isDetected">
+		Далее
+	</Button>
 </template>
 
 <style>

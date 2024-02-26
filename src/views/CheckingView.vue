@@ -19,7 +19,7 @@ const toast = useToast();
 const browserSupport = ref(true);
 const cameraAvailable = ref(false);
 const microphoneAvailable = ref(false);
-const moreDisplays = ref(true);
+const moreDisplays = ref(false);
 const isAllStatus = ref(true);
 
 onMounted(async () => {

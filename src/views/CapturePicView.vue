@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted, defineEmits, defineProps } from 'vue';
-import { storeToRefs } from 'pinia';
-
+import axios from 'axios';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCamera, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { takePhoto } from '@utils/takePhoto';
 import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
-const props = defineProps(['id']);
+import { useToast } from 'vue-toastification';
 
+const props = defineProps(['id']);
+const toast = useToast();
 const faceDetectionStore = useFaceDetectionStore();
 
 library.add(faCamera, faCloudArrowUp);
@@ -19,8 +20,26 @@ const takePhotoStatus = ref(false);
 
 const emit = defineEmits(['change-step']);
 
-const changeStep = () => {
-	emit('change-step');
+const startTest = async attempt_id => {
+	const formData = new FormData();
+	formData.append('attempt_id', attempt_id);
+
+	try {
+		const { data } = await axios.put(
+			'https://proctoring.platon.uz/services/platon-core/api/update/attempt_status',
+			formData
+		);
+
+		emit('change-step');
+	} catch ({ response: { data } }) {
+		toast.error(data.message, {
+			timeout: 4000,
+		});
+	}
+};
+
+const changeStep = async () => {
+	await startTest(faceDetectionStore.attempt_id);
 };
 
 onMounted(() => {
@@ -90,7 +109,7 @@ const checkPhotoRequest = async () => {
 		</div>
 	</div>
 	<Button @click="changeStep" :disabled="!faceDetectionStore.isDetected">
-		Далее
+		Начать тест
 	</Button>
 </template>
 

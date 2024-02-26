@@ -10,10 +10,11 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
 
-	const faceDetect = async (image, token) => {
+	const faceDetect = async (image, token, session_id) => {
 		const formData = new FormData();
 		formData.append('photo', image);
 		formData.append('token', token);
+		formData.append('session_id', session_id);
 
 		try {
 			const {

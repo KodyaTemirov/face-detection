@@ -13,7 +13,12 @@
 				@change-step="changeStep"
 			/>
 			<CheckingView v-if="step === 2" @change-step="changeStep" />
-			<CapturePicView :id="id" v-if="step === 3" @change-step="changeStep" />
+			<CapturePicView
+				:id="user_id"
+				:session_id="session_id"
+				v-if="step === 3"
+				@change-step="changeStep"
+			/>
 			<TestingView
 				v-if="step === 4"
 				:url="userInfo.iframe_url"
@@ -34,7 +39,7 @@ import RulesView from '@views/RulesView.vue';
 import CapturePicView from '@views/CapturePicView.vue';
 import LoadingView from '@views/LoadingView.vue';
 
-const { id } = defineProps(['id']);
+const { user_id, session_id } = defineProps(['user_id', 'session_id']);
 const isLoading = ref(true);
 const userInfo = ref({ test: 'test' });
 const router = useRouter();
@@ -49,7 +54,7 @@ const changeStep = () => {
 const fetchData = async () => {
 	try {
 		const response = await axios.get(
-			`https://proctoring.platon.uz/services/platon-core/api/get_user?token=${id}`
+			`https://proctoring.platon.uz/services/platon-core/api/get_user?token=${user_id}&session_id=${session_id}`
 		);
 		const data = response.data;
 

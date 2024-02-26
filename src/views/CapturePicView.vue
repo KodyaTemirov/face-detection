@@ -7,7 +7,8 @@ import { takePhoto } from '@utils/takePhoto';
 import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
 import { useToast } from 'vue-toastification';
 
-const props = defineProps(['id']);
+const props = defineProps(['id', 'session_id']);
+
 const toast = useToast();
 const faceDetectionStore = useFaceDetectionStore();
 
@@ -66,7 +67,8 @@ const takePhotoHandler = async () => {
 };
 
 const checkPhotoRequest = async () => {
-	await faceDetectionStore.faceDetect(photo.value, props.id);
+	console.log(props.session_id);
+	await faceDetectionStore.faceDetect(photo.value, props.id, props.session_id);
 };
 </script>
 

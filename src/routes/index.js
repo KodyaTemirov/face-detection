@@ -20,6 +20,15 @@ const routes = [
 		component: Home,
 	},
 	{
+		path: '/start',
+		name: 'Proctoring',
+		component: Home,
+		props: route => ({
+			user_id: route.query.user_id,
+			session_id: route.query.session_id,
+		}),
+	},
+	{
 		path: '/checking-device',
 		name: 'Checking device',
 		component: Checking,

@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted, defineEmits } from 'vue';
+import { useToast } from 'vue-toastification';
+
 import {
 	checkBrowserSupport,
 	checkCamera,
 	checkMicrophone,
+	checkDisplays
 } from '@utils/checkDevice';
 const emit = defineEmits(['change-step']);
 
@@ -11,17 +14,22 @@ const changeStep = () => {
 	emit('change-step');
 };
 
+
+const toast = useToast();
 const browserSupport = ref(true);
 const cameraAvailable = ref(false);
 const microphoneAvailable = ref(false);
+const moreDisplays = ref(true);
 const isAllStatus = ref(true);
 
 onMounted(async () => {
 	browserSupport.value = await checkBrowserSupport();
 	cameraAvailable.value = await checkCamera();
 	microphoneAvailable.value = await checkMicrophone();
+	moreDisplays.value = await checkDisplays();
 
-	if (browserSupport && cameraAvailable && microphoneAvailable) {
+
+	if (browserSupport && cameraAvailable && microphoneAvailable && moreDisplays) {
 		isAllStatus.value = false;
 	} else {
 		isAllStatus.value = true;
@@ -68,6 +76,17 @@ onMounted(async () => {
 			>
 			</span>
 			Проверка микрофона
+		</li>
+		<li class="flex gap-2 items-center">
+			<span
+				:class="{
+					'bg-red-500': !moreDisplays,
+					'bg-green-500': moreDisplays,
+					'w-3 h-3 block rounded-full': true,
+				}"
+			>
+			</span>
+			Проверка мониторов
 		</li>
 	</ul>
 	<Button @click="changeStep" :disabled="isAllStatus"> Далее </Button>

@@ -21,6 +21,8 @@ const cameraAvailable = ref(false);
 const microphoneAvailable = ref(false);
 const moreDisplays = ref(false);
 const isAllStatus = ref(true);
+const checkingEnd = ref(false);
+
 
 onMounted(async () => {
 	browserSupport.value = await checkBrowserSupport();
@@ -28,10 +30,12 @@ onMounted(async () => {
 	microphoneAvailable.value = await checkMicrophone();
 	moreDisplays.value = await checkDisplays();
 
+	checkingEnd.value = true;
 
-	if (browserSupport && cameraAvailable && microphoneAvailable && moreDisplays) {
+	if (browserSupport.value && cameraAvailable.value && microphoneAvailable.value && moreDisplays.value) {
 		isAllStatus.value = false;
 	} else {
+		toast.error("Вы не прошли проверку");
 		isAllStatus.value = true;
 	}
 });
@@ -88,6 +92,24 @@ onMounted(async () => {
 			</span>
 			Проверка мониторов
 		</li>
+		<ul v-if="checkingEnd">
+			<li v-if="isAllStatus" class="text-red-500">
+				<p v-if="isAllStatus" class="text-red-500">Вы не прошли проверку</p>	
+			</li>
+			<li v-if="!cameraAvailable" class="flex items-center gap-1">
+				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
+				<span class="text-red-500">Проверьте доступ для веб-камеру</span>
+			</li>
+			<li v-if="!microphoneAvailable" class="flex items-center gap-1">
+				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
+				<span class="text-red-500">Проверьте доступ для микрофона</span>
+			</li>
+			<li v-if="!moreDisplays" class="flex items-center gap-1">
+				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
+				<span class="text-red-500">Подключение более одного монитора</span>
+			</li>
+		</ul>
+		
 	</ul>
 	<Button @click="changeStep" :disabled="isAllStatus"> Далее </Button>
 </template>

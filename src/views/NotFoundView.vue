@@ -1,20 +1,30 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-	<router-link to="/user/e0296f10-7a7f-4d45-a63f-356b38355e9b">
+	<router-link
+		to="/start?user_id=5424a4b0-1b38-4fb5-a3c2-9f8e8fcf8b0d&session_id=f2401ab8-5ec3-4604-9eed-c6cc8587ebd2"
+	>
 		Start test
 	</router-link>
 	<div class="text-center">
 		<p class="text-base font-semibold text-indigo-600">404</p>
-		<h1 class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Page not found</h1>
-		<p class="mt-6 text-base leading-7 text-gray-600">Sorry, we couldn’t find the page you’re looking for.</p>
+		<h1
+			class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+		>
+			Page not found
+		</h1>
+		<p class="mt-6 text-base leading-7 text-gray-600">
+			Sorry, we couldn’t find the page you’re looking for.
+		</p>
 		<div class="mt-10 flex items-center justify-center gap-x-6">
-			<a href="#"
-				class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Go
-				back home</a>
-			<a href="#" class="text-sm font-semibold text-gray-900">Contact support <span aria-hidden="true">&rarr;</span></a>
+			<a
+				href="#"
+				class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				>Go back home</a
+			>
+			<a href="#" class="text-sm font-semibold text-gray-900"
+				>Contact support <span aria-hidden="true">&rarr;</span></a
+			>
 		</div>
 	</div>
 </template>

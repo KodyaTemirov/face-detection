@@ -69,7 +69,6 @@ const takePhotoHandler = async () => {
 };
 
 const checkPhotoRequest = async () => {
-	console.log(props.session_id);
 	photoLoading.value = true;
 	await faceDetectionStore.faceDetect(photo.value, props.id, props.session_id);
 	

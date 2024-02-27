@@ -7,6 +7,7 @@ import { takePhoto } from '@utils/takePhoto';
 import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
 import { useToast } from 'vue-toastification';
 
+
 const props = defineProps(['id', 'session_id']);
 
 const toast = useToast();
@@ -18,6 +19,7 @@ const videoHeight = 552; // Желаемая высота области вид�
 const webcam = ref(null);
 const photo = ref(null);
 const takePhotoStatus = ref(false);
+const photoLoading = ref(false);
 
 const emit = defineEmits(['change-step']);
 
@@ -68,13 +70,23 @@ const takePhotoHandler = async () => {
 
 const checkPhotoRequest = async () => {
 	console.log(props.session_id);
+	photoLoading.value = true;
 	await faceDetectionStore.faceDetect(photo.value, props.id, props.session_id);
+	
+	if(faceDetectionStore.similarity > 0.26 || !faceDetectionStore.isDetected || faceDetectionStore.hasError){
+		photo.value = null;
+		takePhotoStatus.value = false;
+	}
+
+	photoLoading.value = false;
+
+	
 };
 </script>
 
 <template>
-	<h1 class="text-2xl font-bold pb-8">Фотографирование лица</h1>
 
+	<h1 class="text-2xl font-bold pb-8">Фотографирование лица</h1>
 	<div class="flex justify-center">
 		<div class="webcam-container">
 			<video
@@ -91,7 +103,7 @@ const checkPhotoRequest = async () => {
 			/>
 
 			<button
-				v-if="!takePhotoStatus"
+				v-if="!takePhotoStatus && !photoLoading"
 				@click="takePhotoHandler"
 				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
 			>
@@ -99,9 +111,9 @@ const checkPhotoRequest = async () => {
 
 				Сделать снимок
 			</button>
-
+			<div class="loader absolute bottom-0 left-[50%] translate-x-[-50%] w-full p-4" v-if="photoLoading"></div>
 			<button
-				v-else
+				v-if="takePhotoStatus && !photoLoading"
 				@click="checkPhotoRequest"
 				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
 			>

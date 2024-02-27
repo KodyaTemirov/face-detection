@@ -46,6 +46,21 @@ const addNewMessage = (messages, value) => {
 	}
 };
 
+const checkingOpenNewTab = () => {
+	document.addEventListener('visibilitychange', () => {
+		if(document.hidden){
+			toast.error("Пожалуйста, оставайтесь в окне экзамена");
+		}
+	})
+}
+
+const checkingResizeWindow = () => {
+	window.addEventListener('resize', () => {
+		toast.error("Пожалуйста, старайтесь не изменить размер экрана");
+	})
+}
+
+
 onMounted(async () => {
 	let faceLandmarker;
 
@@ -54,6 +69,8 @@ onMounted(async () => {
 		isActive.value = false;
 	};
 
+	checkingOpenNewTab();
+	checkingResizeWindow();
 	await setupFaceLandmarker();
 
 	let lastVideoTime = -1;

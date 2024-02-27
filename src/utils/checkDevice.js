@@ -69,9 +69,6 @@ export const checkDisplays = async () => {
 		const processes = arrays[0].replaceAll(/[\[\]\"]/g, '').split(', ');
 		const displays = arrays[1].replaceAll(/[\[\]\"]/g, '').split(', ').slice(0, -1);
 
-		console.log(displays, "displays");
-
-
 		return displays.length == 1;
 
 	})

@@ -7,7 +7,6 @@ import { takePhoto } from '@utils/takePhoto';
 import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
 import { useToast } from 'vue-toastification';
 
-
 const props = defineProps(['id', 'session_id']);
 
 const toast = useToast();
@@ -20,6 +19,7 @@ const webcam = ref(null);
 const photo = ref(null);
 const takePhotoStatus = ref(false);
 const photoLoading = ref(false);
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const emit = defineEmits(['change-step']);
 
@@ -29,7 +29,7 @@ const startTest = async attempt_id => {
 
 	try {
 		const { data } = await axios.put(
-			'https://proctoring.platon.uz/services/platon-core/api/update/attempt_status',
+			apiUrl + '/services/platon-core/api/update/attempt_status',
 			formData
 		);
 
@@ -71,20 +71,21 @@ const takePhotoHandler = async () => {
 const checkPhotoRequest = async () => {
 	photoLoading.value = true;
 	await faceDetectionStore.faceDetect(photo.value, props.id, props.session_id);
-	
-	if(faceDetectionStore.similarity > 0.26 || !faceDetectionStore.isDetected || faceDetectionStore.hasError){
+
+	if (
+		faceDetectionStore.similarity > 0.26 ||
+		!faceDetectionStore.isDetected ||
+		faceDetectionStore.hasError
+	) {
 		photo.value = null;
 		takePhotoStatus.value = false;
 	}
 
 	photoLoading.value = false;
-
-	
 };
 </script>
 
 <template>
-
 	<h1 class="text-2xl font-bold pb-8">Фотографирование лица</h1>
 	<div class="flex justify-center">
 		<div class="webcam-container">
@@ -110,7 +111,10 @@ const checkPhotoRequest = async () => {
 
 				Сделать снимок
 			</button>
-			<div class="loader absolute bottom-0 left-[50%] translate-x-[-50%] w-full p-4" v-if="photoLoading"></div>
+			<div
+				class="loader absolute bottom-0 left-[50%] translate-x-[-50%] w-full p-4"
+				v-if="photoLoading"
+			></div>
 			<button
 				v-if="takePhotoStatus && !photoLoading"
 				@click="checkPhotoRequest"

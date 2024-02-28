@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
 import { useToast } from 'vue-toastification';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const toast = useToast();
 
@@ -20,7 +21,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			const {
 				data: { data: responseData },
 			} = await axios.post(
-				'https://proctoring.platon.uz/services/platon-core/api/get/user_photos',
+				apiUrl + '/services/platon-core/api/get/user_photos',
 				formData
 			);
 
@@ -50,7 +51,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			const {
 				data: { data: responseData },
 			} = await axios.post(
-				'https://proctoring.platon.uz/services/platon-core/api/update/user_photo',
+				apiUrl + '/services/platon-core/api/update/user_photo',
 				formData
 			);
 

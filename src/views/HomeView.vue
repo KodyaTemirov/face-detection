@@ -32,6 +32,7 @@
 import { ref, onMounted, defineProps } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 import TestingView from '@views/TestingView.vue';
 import CheckingView from '@views/CheckingView.vue';
@@ -54,7 +55,8 @@ const changeStep = () => {
 const fetchData = async () => {
 	try {
 		const response = await axios.get(
-			`https://proctoring.platon.uz/services/platon-core/api/get_user?token=${user_id}&session_id=${session_id}`
+			apiUrl +
+				`/services/platon-core/api/get_user?token=${user_id}&session_id=${session_id}`
 		);
 		const data = response.data;
 

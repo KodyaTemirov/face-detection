@@ -2,9 +2,15 @@
 import { ref, onMounted, reactive, defineProps, defineEmits } from 'vue';
 import Messages from '@components/Messages.vue';
 import TestingIframe from '@components/TestingIframe.vue';
-import { checkCamera, checkMicrophone } from '@utils/checkDevice';
+import {
+	checkCamera,
+	checkMicrophone,
+	checkingOpenNewTab,
+	checkingResizeWindow,
+} from '@utils/checkDevice';
 import { takePhoto } from '@utils/takePhoto';
 import { useToast } from 'vue-toastification';
+import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
 
 import {
 	createFaceLandmarker,
@@ -15,7 +21,8 @@ import { determineDirection } from '@utils/determineDirection';
 const props = defineProps(['url']);
 const toast = useToast();
 const emit = defineEmits(['change-step']);
-const photo = ref(null);
+
+const faceDetectionStore = useFaceDetectionStore();
 
 const cameraAvailable = ref(true);
 const microphoneAvailable = ref(true);
@@ -45,21 +52,6 @@ const addNewMessage = (messages, value) => {
 		return [...messages];
 	}
 };
-
-const checkingOpenNewTab = () => {
-	document.addEventListener('visibilitychange', () => {
-		if(document.hidden){
-			toast.error("Пожалуйста, оставайтесь в окне экзамена");
-		}
-	})
-}
-
-const checkingResizeWindow = () => {
-	window.addEventListener('resize', () => {
-		toast.error("Пожалуйста, старайтесь не изменить размер экрана");
-	})
-}
-
 
 onMounted(async () => {
 	let faceLandmarker;
@@ -135,23 +127,27 @@ onMounted(async () => {
 	setInterval(async () => {
 		cameraAvailable.value = checkCamera();
 		microphoneAvailable.value = checkMicrophone();
-		// Take photo or toast
+
 		if (!isDisrupted.value) {
-			const photoData = takePhoto(webcam, 192, 192);
-			console.log(photoData);
-			photo.value = await photoData;
+			const photoData = await takePhoto(webcam, 192, 192);
+
+			await faceDetectionStore.faceUpdate(
+				photoData,
+				faceDetectionStore.attempt_id
+			);
 		} else {
-			toast.error('Kameraga qarashni maslahat beraman!!!', {
-				timeout: 4000,
-			});
+			toast.error(
+				'Смотрите прямо в камеру, не нарушайте правила тестирования!',
+				{
+					timeout: 4000,
+				}
+			);
 		}
 	}, 5000);
 });
 </script>
 
 <template>
-	<img v-if="photo" :src="photo" alt="Снимок" class="h-48 w-48" />
-
 	<div v-if="cameraAvailable && microphoneAvailable">
 		<Messages :messages="messages" />
 		<TestingIframe :src="url" />

@@ -1,3 +1,7 @@
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+
 export const checkBrowserSupport = async () => {
 	try {
 		return !!(
@@ -33,46 +37,62 @@ export const checkMicrophone = async () => {
 
 export const checkDisplays = async () => {
 	return await fetch('http://localhost:9060/')
-	.then(async response => {
-		const {body: readableStream} = response;
+		.then(async response => {
+			const { body: readableStream } = response;
 
-		const reader = readableStream.getReader();
+			const reader = readableStream.getReader();
 
-		let data = [];
+			let data = [];
 
-		while(true){
-			const {done, value} = await reader.read();
+			while (true) {
+				const { done, value } = await reader.read();
 
-			if(done){
-				break;
+				if (done) {
+					break;
+				}
+
+				data.push(value);
 			}
 
-			data.push(value);
-		}
+			const totalLength = data.reduce((acc, chunk) => acc + chunk.length, 0);
+			const concatenedChunks = new Uint8Array(totalLength);
+			let offset = 0;
 
-		const totalLength = data.reduce((acc, chunk) => acc + chunk.length, 0);
-		const concatenedChunks = new Uint8Array(totalLength);
-		let offset = 0;
+			data.forEach(chunk => {
+				concatenedChunks.set(chunk, offset);
+				offset += chunk.length;
+			});
 
-		data.forEach(chunk => {
-			concatenedChunks.set(chunk, offset);
-			offset += chunk.length;
+			let concatedChunksToString = new TextDecoder().decode(concatenedChunks);
+			concatedChunksToString = JSON.stringify(concatedChunksToString);
+
+			const result = JSON.parse(concatedChunksToString);
+
+			const arrays = result.match(/\[[^\]]*\]/g);
+
+			const processes = arrays[0].replaceAll(/[\[\]\"]/g, '').split(', ');
+			const displays = arrays[1]
+				.replaceAll(/[\[\]\"]/g, '')
+				.split(', ')
+				.slice(0, -1);
+
+			return displays.length == 1;
 		})
+		.catch(error => {
+			return false;
+		});
+};
 
-		let concatedChunksToString = new TextDecoder().decode(concatenedChunks);
-		concatedChunksToString = JSON.stringify(concatedChunksToString);
-
-		const result = JSON.parse(concatedChunksToString);
-
-		const arrays = result.match(/\[[^\]]*\]/g);
-
-		const processes = arrays[0].replaceAll(/[\[\]\"]/g, '').split(', ');
-		const displays = arrays[1].replaceAll(/[\[\]\"]/g, '').split(', ').slice(0, -1);
-
-		return displays.length == 1;
-
-	})
-	.catch(error => {
-		return false;
+export const checkingOpenNewTab = () => {
+	document.addEventListener('visibilitychange', () => {
+		if (document.hidden) {
+			toast.error('Пожалуйста, оставайтесь в окне экзамена');
+		}
 	});
-}
+};
+
+export const checkingResizeWindow = () => {
+	window.addEventListener('resize', () => {
+		toast.error('Пожалуйста, старайтесь не изменить размер экрана');
+	});
+};

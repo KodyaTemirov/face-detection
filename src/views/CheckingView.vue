@@ -6,14 +6,13 @@ import {
 	checkBrowserSupport,
 	checkCamera,
 	checkMicrophone,
-	checkDisplays
+	checkDisplays,
 } from '@utils/checkDevice';
 const emit = defineEmits(['change-step']);
 
 const changeStep = () => {
 	emit('change-step');
 };
-
 
 const toast = useToast();
 const browserSupport = ref(true);
@@ -23,7 +22,6 @@ const moreDisplays = ref(false);
 const isAllStatus = ref(true);
 const checkingEnd = ref(false);
 
-
 onMounted(async () => {
 	browserSupport.value = await checkBrowserSupport();
 	cameraAvailable.value = await checkCamera();
@@ -32,10 +30,15 @@ onMounted(async () => {
 
 	checkingEnd.value = true;
 
-	if (browserSupport.value && cameraAvailable.value && microphoneAvailable.value && moreDisplays.value) {
+	if (
+		browserSupport.value &&
+		cameraAvailable.value &&
+		microphoneAvailable.value &&
+		moreDisplays.value
+	) {
 		isAllStatus.value = false;
 	} else {
-		toast.error("Вы не прошли проверку");
+		toast.error('Вы не прошли проверку');
 		isAllStatus.value = true;
 	}
 });
@@ -92,9 +95,12 @@ onMounted(async () => {
 			</span>
 			Проверка мониторов
 		</li>
+
 		<ul v-if="checkingEnd">
 			<li v-if="isAllStatus" class="text-red-500">
-				<p v-if="isAllStatus" class="text-red-500">Вы не прошли проверку</p>	
+				<h2 v-if="isAllStatus" class="text-black text-2xl font-bold pb-8 mt-8">
+					Вы не прошли проверку
+				</h2>
 			</li>
 			<li v-if="!cameraAvailable" class="flex items-center gap-1">
 				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
@@ -108,11 +114,19 @@ onMounted(async () => {
 				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
 				<span class="text-red-500">Подключение более одного монитора</span>
 			</li>
-			<li v-if="!moreDisplays">
-				Если у вас установлен программа <span class="text-slate-600 font-bold">"Realsoft Proctoring"</span>, наверника у вас подключены несколько мониторов. Если у вас не установлен программа, можете скачать его по этой <a class="text-blue-600" href="https://proctoring.platon.uz/services/platon-core/web/v1/store/file/apps/Proctoring_RealSoft_Setup.msi">ссылке.</a> После установки попробуйте снова пройти проверку.
+			<li v-if="!moreDisplays" class="mt-6">
+				Если у вас установлена программа
+				<span class="font-bold">"Realsoft Proctoring"</span>, вероятно, у вас
+				подключено несколько мониторов. Если программа не установлена, вы можете
+				скачать её по этой
+				<a
+					class="text-blue-600"
+					href="https://proctoring.platon.uz/services/platon-core/web/v1/store/file/apps/Proctoring_RealSoft_Setup.msi"
+					>ссылке.</a
+				>
+				После установки попробуйте пройти проверку снова.
 			</li>
 		</ul>
-		
 	</ul>
-	<Button @click="changeStep" :disabled="isAllStatus"> Далее </Button>
+	<Button @click="changeStep"> Далее </Button>
 </template>

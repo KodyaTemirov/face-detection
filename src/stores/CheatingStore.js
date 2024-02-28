@@ -5,7 +5,7 @@ import { useToast } from 'vue-toastification';
 
 const toast = useToast();
 
-export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
+export const useCheatingStore = defineStore('cheatingStore', () => {
 	const similarity = ref(null);
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
@@ -27,14 +27,13 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			if (!responseData.ai.status) {
 				throw new Error(responseData.ai.message);
 			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Картинки не совпадают. Пожалуйста, попробуйте снова.');
+				throw new Error('Rasmlar mos tushmadi.');
 			} else {
 				isDetected.value = responseData.ai.similarity <= 0.26;
 			}
 			similarity.value = responseData.ai.similarity;
 			attempt_id.value = responseData.create.id;
 		} catch (error) {
-			hasError.value = true;
 			toast.error(error.message, {
 				timeout: 4000,
 			});
@@ -42,6 +41,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	};
 
 	const faceUpdate = async (image, id) => {
+		console.log('faceUpdate', image, id);
 		try {
 			const formData = new FormData();
 			formData.append('photo', image);
@@ -54,16 +54,14 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 				formData
 			);
 
-			if (!responseData.ai.status) {
-				throw new Error(responseData.ai.message);
-			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Rasmlar mos tushmadi.');
-			} else {
+			if (responseData.ai.status) {
+				similarity.value = responseData.ai.similarity;
 				isDetected.value = responseData.ai.similarity <= 0.26;
+			} else {
+				throw new Error(responseData.ai.message);
 			}
-			similarity.value = responseData.ai.similarity;
 		} catch (error) {
-			toast.error(error.message, {
+			toast.error(error, {
 				timeout: 4000,
 			});
 		}

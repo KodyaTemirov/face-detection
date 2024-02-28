@@ -108,6 +108,9 @@ onMounted(async () => {
 				<span class="bg-red-500 w-3 h-3 block rounded-full"></span>
 				<span class="text-red-500">Подключение более одного монитора</span>
 			</li>
+			<li v-if="!moreDisplays">
+				Если у вас установлен программа <span class="text-slate-600 font-bold">"Realsoft Proctoring"</span>, наверника у вас подключены несколько мониторов. Если у вас не установлен программа, можете скачать его по этой <a class="text-blue-600" href="https://proctoring.platon.uz/services/platon-core/web/v1/store/file/apps/Proctoring_RealSoft_Setup.msi">ссылке.</a> После установки попробуйте снова пройти проверку.
+			</li>
 		</ul>
 		
 	</ul>

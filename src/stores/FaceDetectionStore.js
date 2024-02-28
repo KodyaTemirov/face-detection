@@ -9,6 +9,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const similarity = ref(null);
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
+	const hasError = ref(false);
 
 	const faceDetect = async (image, token, session_id) => {
 		const formData = new FormData();
@@ -27,14 +28,14 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			if (!responseData.ai.status) {
 				throw new Error(responseData.ai.message);
 			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Rasmlar mos tushmadi.');
+				throw new Error('Картинки не совпадают. Пожалуйста, попробуйте снова.');
 			} else {
 				isDetected.value = responseData.ai.similarity <= 0.26;
 			}
 			similarity.value = responseData.ai.similarity;
 			attempt_id.value = responseData.create.id;
 		} catch (error) {
-			console.log(error);
+			hasError.value = true;
 			toast.error(error.message, {
 				timeout: 4000,
 			});
@@ -67,5 +68,5 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 		}
 	};
 
-	return { similarity, attempt_id, isDetected, faceDetect, faceUpdate };
+	return { similarity, attempt_id, isDetected, hasError, faceDetect, faceUpdate };
 });

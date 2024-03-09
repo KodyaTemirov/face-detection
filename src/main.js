@@ -8,9 +8,21 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useAuthStore } from '@stores/AuthStore';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import { createI18n } from 'vue-i18n';
+import { languages, defaultLocale } from './locales';
+
+const i18n = createI18n({
+	legacy: false,
+	locale: defaultLocale,
+	fallbackLocale: 'ru',
+	messages: {
+		...languages,
+	},
+});
 
 const app = createApp(App);
 
+app.use(i18n);
 app.use(createPinia());
 
 const authStore = useAuthStore();

@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--accent-main: #3680fa;
+	--accent-main-hover: #005aec;
+	--accent-button: #fff;
+	--basic-light-white: #fff;
+	--basic-light-lighgrey: #f9f9f9;
+	--basic-light-darkgrey: #8f8f8f;
+	--basic-light-black: #0d0d0d;
+	--basic-dark-black: #0d0d0d;
+	--basic-dark-lightblack: #151515;
+	--basic-dark-grey: #c8c8c8;
+	--basic-dark-white: #fff;
+	--status-succes: #46c258;
+	--status-error: #f43834;
+}
+
 body {
-	background: #f4f7fe;
+	background: #f9f9f9;
 }
 
 aside {
@@ -12,12 +28,6 @@ aside {
 
 .invisible {
 	opacity: 0.2;
-}
-#app {
-	gap: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 
 @keyframes spin {

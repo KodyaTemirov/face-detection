@@ -11,11 +11,27 @@ const clickHandler = () => {
 </script>
 
 <template>
-	<button
-		@click="clickHandler"
-		:disabled="disabled"
-		class="bg-blue-500 py-2 px-6 rounded text-white float-right disabled:bg-slate-400 hover:bg-blue-700 my-8"
-	>
+	<button @click="clickHandler" :disabled="disabled" class="btn">
 		<slot />
 	</button>
 </template>
+
+<style scoped>
+.btn {
+	width: 100%;
+	border-radius: 200px;
+	background: var(--accent-main);
+	padding: 24px 48px;
+	font-family: var(--font-family);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 100%;
+	color: var(--accent-button);
+}
+.btn:hover {
+	background: var(--accent-main-hover);
+}
+.btn:disabled {
+	opacity: 0.5;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
 	<main>
-		<div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 layout">
+		<div class="layout">
 			<slot />
 		</div>
 	</main>
@@ -9,6 +9,13 @@
 <script setup></script>
 <style>
 .layout {
-	width: 800px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+	width: 808px;
+	padding: 20px;
+	height: 100vh;
 }
 </style>

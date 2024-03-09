@@ -5,7 +5,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCamera, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { takePhoto } from '@utils/takePhoto';
 import { useFaceDetectionStore } from '@stores/FaceDetectionStore';
-import { useToast } from 'vue-toastification';
+import { useToast, POSITION } from 'vue-toastification';
 
 const props = defineProps(['id', 'session_id']);
 
@@ -13,8 +13,8 @@ const toast = useToast();
 const faceDetectionStore = useFaceDetectionStore();
 
 library.add(faCamera, faCloudArrowUp);
-const videoWidth = 552; // Желаемая ширина области видео
-const videoHeight = 552; // Желаемая высота области видео
+const videoWidth = 297; // Желаемая ширина области видео
+const videoHeight = 297; // Желаемая высота области видео
 const webcam = ref(null);
 const photo = ref(null);
 const takePhotoStatus = ref(false);
@@ -37,6 +37,7 @@ const startTest = async attempt_id => {
 	} catch ({ response: { data } }) {
 		toast.error(data.message, {
 			timeout: 4000,
+			position: POSITION.BOTTOM_CENTER,
 		});
 	}
 };
@@ -66,6 +67,7 @@ const takePhotoHandler = async () => {
 		photo.value = await takePhoto(webcam, videoWidth, videoHeight);
 		takePhotoStatus.value = true;
 	}
+	checkPhotoRequest();
 };
 
 const checkPhotoRequest = async () => {
@@ -80,14 +82,15 @@ const checkPhotoRequest = async () => {
 		photo.value = null;
 		takePhotoStatus.value = false;
 	}
-
 	photoLoading.value = false;
 };
 </script>
 
 <template>
-	<h1 class="text-2xl font-bold pb-8">Фотографирование лица</h1>
-	<div class="flex justify-center">
+	<Card
+		title="Фотографирование лица"
+		class="w-full flex items-center flex-col mt-7"
+	>
 		<div class="webcam-container">
 			<video
 				ref="webcam"
@@ -102,39 +105,71 @@ const checkPhotoRequest = async () => {
 				class="absolute top-0 left-0"
 			/>
 
-			<button
-				v-if="!takePhotoStatus && !photoLoading"
-				@click="takePhotoHandler"
-				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
-			>
-				<font-awesome-icon icon="fa-solid fa-camera" />
-
-				Сделать снимок
-			</button>
 			<div
-				class="loader absolute bottom-0 left-[50%] translate-x-[-50%] w-full p-4"
 				v-if="photoLoading"
-			></div>
-			<button
-				v-if="takePhotoStatus && !photoLoading"
-				@click="checkPhotoRequest"
-				class="bg-black text-white absolute bottom-0 w-full p-4 hover:bg-blue-500"
+				class="bg-black bg-opacity-25 text-white absolute bottom-0 p-4 hover:bg-blue-500 w-full h-full flex justify-center items-center"
 			>
-				<font-awesome-icon icon="fa-solid fa-cloud-arrow-up" />
-				Отправить снимок
-			</button>
+				<div class="loader bottom-0 w-full p-4"></div>
+			</div>
 		</div>
-	</div>
-	<Button @click="changeStep" :disabled="!faceDetectionStore.isDetected">
-		Начать тест
+
+		<button
+			@click="takePhotoHandler"
+			class="button mt-7 flex justify-center gap-1"
+			:class="{ active: faceDetectionStore.isDetected }"
+			:disabled="faceDetectionStore.isDetected"
+		>
+			<span
+				v-if="!faceDetectionStore.isDetected"
+				class="flex justify-center gap-1"
+			>
+				<Icon name="photo" />
+				Сделать снимок
+			</span>
+			<span v-else class="flex justify-center gap-1">
+				<Icon name="check" />
+				Проверка пройдена
+			</span>
+		</button>
+	</Card>
+	<div class="flex justify-center"></div>
+	<Button
+		class="mt-2"
+		@click="changeStep"
+		:disabled="!faceDetectionStore.isDetected"
+	>
+		Далее
 	</Button>
 </template>
 
-<style>
+<style scoped>
+.button {
+	border: 1px solid var(--accent-main);
+	border-radius: 200px;
+	font-family: var(--font-family);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 100%;
+	color: var(--accent-main);
+	background: var(--accent-button);
+	padding: 16px 32px;
+	width: 100%;
+}
+.active {
+	background: var(--status-succes);
+	border: 1px solid var(--status-succes);
+	font-family: var(--font-family);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 100%;
+	color: var(--accent-button);
+}
 .webcam-container {
+	border-radius: 100%;
+	overflow: hidden;
 	position: relative;
-	width: 75%;
-	padding-top: 75%;
+	width: 297px;
+	padding-top: 297px;
 }
 
 .webcam-container video {

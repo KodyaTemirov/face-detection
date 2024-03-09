@@ -4,7 +4,7 @@
 	<router-link
 		to="/start?user_id=5424a4b0-1b38-4fb5-a3c2-9f8e8fcf8b0d&session_id=f2401ab8-5ec3-4604-9eed-c6cc8587ebd2"
 	>
-		Start test
+		Start
 	</router-link>
 	<div class="text-center">
 		<p class="text-base font-semibold text-indigo-600">404</p>

@@ -1,4 +1,5 @@
 <script setup>
+import { defineProps } from 'vue';
 const props = defineProps(['messages']);
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faClock, faComment } from '@fortawesome/free-solid-svg-icons';

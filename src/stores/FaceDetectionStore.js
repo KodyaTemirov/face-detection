@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
-import { useToast } from 'vue-toastification';
+import { useToast, POSITION } from 'vue-toastification';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const toast = useToast();
@@ -10,6 +10,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const similarity = ref(null);
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
+	const hasError = ref(null);
 
 	const faceDetect = async (image, token, session_id) => {
 		const formData = new FormData();
@@ -28,7 +29,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			if (!responseData.ai.status) {
 				throw new Error(responseData.ai.message);
 			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Картинки не совпадают. Пожалуйста, попробуйте снова.');
+				throw new Error(`Rasmlar mos kelmadi. Qayta urinib ko'ring `);
 			} else {
 				isDetected.value = responseData.ai.similarity <= 0.26;
 			}
@@ -36,12 +37,33 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			attempt_id.value = responseData.create.id;
 		} catch (error) {
 			hasError.value = true;
+
 			toast.error(error.message, {
 				timeout: 4000,
+				position: POSITION.BOTTOM_CENTER,
 			});
 		}
 	};
+	const addCheating = async code => {
+		const formData = new FormData();
 
+		formData.append('code', code);
+		formData.append('attempt_id', attempt_id.value);
+
+		try {
+			const {
+				data: { data: responseData },
+			} = await axios.post(
+				apiUrl + '/services/platon-core/api/add/cheating_case',
+				formData
+			);
+		} catch (error) {
+			toast.error(error.message, {
+				timeout: 4000,
+				position: POSITION.BOTTOM_CENTER,
+			});
+		}
+	};
 	const faceUpdate = async (image, id) => {
 		try {
 			const formData = new FormData();
@@ -58,7 +80,8 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 			if (!responseData.ai.status) {
 				throw new Error(responseData.ai.message);
 			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Rasmlar mos tushmadi.');
+				addCheating('c5', attempt_id);
+				throw new Error('Rasmlar mos kelmadi!');
 			} else {
 				isDetected.value = responseData.ai.similarity <= 0.26;
 			}
@@ -66,6 +89,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 		} catch (error) {
 			toast.error(error.message, {
 				timeout: 4000,
+				position: POSITION.BOTTOM_CENTER,
 			});
 		}
 	};

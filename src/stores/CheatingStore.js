@@ -1,38 +1,33 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
-import { useToast } from 'vue-toastification';
+import { useToast, POSITION } from 'vue-toastification';
 const apiUrl = import.meta.env.VITE_API_URL;
 const toast = useToast();
 
 export const useCheatingStore = defineStore('cheatingStore', () => {
-	const similarity = ref(null);
-	const attempt_id = ref(null);
-	const isDetected = ref(null);
+	const allCheating = ref(null);
+	const currentScore = ref(100);
+	const cheating = ref(null);
+	const monitorCount = ref(1);
+	const isMonitorCheating = ref(false);
 
-	const faceDetect = async (image, token, session_id) => {
+	const addCheating = async (code, attempt_id) => {
 		const formData = new FormData();
-		formData.append('photo', image);
-		formData.append('token', token);
-		formData.append('session_id', session_id);
+		formData.append('code', code);
+		formData.append('attempt_id', attempt_id);
 
 		try {
 			const {
 				data: { data: responseData },
 			} = await axios.post(
-				apiUrl + '/services/platon-core/api/get/user_photos',
+				apiUrl + '/services/platon-core/api/add/cheating_case',
 				formData
 			);
-
-			if (!responseData.ai.status) {
-				throw new Error(responseData.ai.message);
-			} else if (responseData.ai.similarity > 0.26) {
-				throw new Error('Rasmlar mos tushmadi.');
-			} else {
-				isDetected.value = responseData.ai.similarity <= 0.26;
-			}
-			similarity.value = responseData.ai.similarity;
-			attempt_id.value = responseData.create.id;
+			const { score, description } = responseData;
+			currentScore.value = score;
+			allCheating.value = description;
+			console.log(description);
 		} catch (error) {
 			toast.error(error.message, {
 				timeout: 4000,
@@ -40,32 +35,23 @@ export const useCheatingStore = defineStore('cheatingStore', () => {
 		}
 	};
 
-	const faceUpdate = async (image, id) => {
-		console.log('faceUpdate', image, id);
-		try {
-			const formData = new FormData();
-			formData.append('photo', image);
-			formData.append('attempt_id', id);
-
-			const {
-				data: { data: responseData },
-			} = await axios.post(
-				apiUrl + '/services/platon-core/api/update/user_photo',
-				formData
-			);
-
-			if (responseData.ai.status) {
-				similarity.value = responseData.ai.similarity;
-				isDetected.value = responseData.ai.similarity <= 0.26;
-			} else {
-				throw new Error(responseData.ai.message);
-			}
-		} catch (error) {
-			toast.error(error, {
-				timeout: 4000,
-			});
+	const updateMonitorCount = count => {
+		if (count > 1) {
+			isMonitorCheating.value = false;
+			monitorCount.value = count;
+		} else {
+			monitorCount.value = count;
+			isMonitorCheating.value = true;
 		}
 	};
 
-	return { similarity, attempt_id, isDetected, faceDetect, faceUpdate };
+	return {
+		cheating,
+		currentScore,
+		allCheating,
+		monitorCount,
+		isMonitorCheating,
+		addCheating,
+		updateMonitorCount,
+	};
 });

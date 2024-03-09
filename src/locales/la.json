@@ -1,0 +1,24 @@
+{
+	"stage": [
+		{
+			"title": "Qurilmaning tekshiruvi",
+			"description": "Подождите, пока система проверит компьютер и сеть, чтобы возможные технические проблемы не мешали мероприятию",
+			"isNotCheckedTitle": "Вы не прошли проверку",
+			"checkedBrowser": "Brauzer tekshiruvi",
+			"checkedCam": "Webcamera tekshiruvi",
+			"checkedMic": "Mikrofon tekshiruvi",
+			"checkedMonitor": "Monitor tekshiruvi",
+			"notBrowser": "Ваш браузер не поддерживается",
+			"notCam": "Нет доступа к камере",
+			"notMic": "Нет доступа к микрофону",
+			"notMon": "Подключено более одного монитора"
+		},
+		{
+			"rulesAllow": "Я ознакомлен(а) с правилами",
+			"condition": "Условия проведения мероприятия"
+		}
+	],
+	"global": {
+		"next": "Keyingisi"
+	}
+}

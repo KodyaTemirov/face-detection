@@ -9,23 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.10",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "@headlessui/vue": "^1.7.18",
     "@heroicons/vue": "^2.1.1",
+    "@mediapipe/tasks-audio": "^0.10.10",
     "@mediapipe/tasks-vision": "^0.10.9",
     "axios": "^1.6.7",
     "date-fns": "^3.3.1",
-    "https": "^1.0.0",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
-    "recordrtc": "^5.6.2",
+    "vite-svg-loader": "^5.1.0",
     "vue": "^3.3.11",
+    "vue-i18n": "9",
     "vue-router": "4",
-    "vue-toastification": "^2.0.0-rc.5",
-    "vue-web-cam": "^1.9.0"
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",

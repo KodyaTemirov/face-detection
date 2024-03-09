@@ -1,0 +1,24 @@
+image: docker:24.0
+variables:
+  DEV_SERVER: '10.2.5.105'
+  PRODUCTION_USER: 'runner'
+
+stages:
+    - build
+
+build: 
+  stage: build
+  only:
+    - main
+  # when: manual
+  allow_failure: false
+  before_script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - eval $(ssh-agent -s)
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    
+  script:
+    - ssh -oStrictHostKeyChecking=no $PRODUCTION_USER@$DEV_SERVER "sudo rm -rf /srv/project/frontend/face-detection/dist; sudo git -C /srv/project/frontend/face-detection/ reset --hard; sudo git -C /srv/project/frontend/face-detection/ pull; sleep 5; cd /srv/project/frontend/face-detection/; sudo npm i; sudo npm install --global yarn; sudo yarn; sudo yarn build; sleep 2; sudo chown -R www-data:www-data /srv/project/frontend/face-detection/"
+

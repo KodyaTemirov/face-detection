@@ -193,12 +193,13 @@ const startIntervalDetect = () => {
 		microphoneAvailable.value = checkMicrophone();
 
 		if (!isDisrupted.value) {
-			const photoData = await takePhoto(webcam, 218, 218);
+			// const photoData = await takePhoto(webcam, 218, 218);
+			faceRecognition(webcam.value, faceDetectionStore.userMainImageURL);
 
-			await faceDetectionStore.faceUpdate(
-				photoData,
-				faceDetectionStore.attempt_id
-			);
+			// await faceDetectionStore.faceUpdate(
+			// 	photoData,
+			// 	faceDetectionStore.attempt_id
+			// );
 		} else {
 			toast.error(`To'g'riga qarang!`, {
 				timeout: 4000,
@@ -327,7 +328,6 @@ onMounted(async () => {
 		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 		webcam.value.srcObject = stream;
 		webcam.value.addEventListener('loadeddata', predictWebcam);
-		faceRecognition(faceDetectionStore.userMainImageURL);
 	} catch (error) {
 		console.error('Error accessing webcam:', error);
 	}

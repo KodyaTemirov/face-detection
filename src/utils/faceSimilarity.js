@@ -40,49 +40,52 @@ async function getLabeledFaceDescriptions(image_url){
 
 }
 
-async function faceRecognition(image_url){
-    const video = document.getElementById("video");
-    console.log(video, "video");
+async function faceRecognition(video, image_url){
     let labeledFaceDescriptors = await getLabeledFaceDescriptions(image_url);
     let faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
 
-    video.addEventListener('play', async () => {
-        const canvas = faceapi.createCanvasFromMedia(video);
-        document.body.append(canvas);
+    const canvas = faceapi.createCanvasFromMedia(video);
+    document.body.append(canvas);
 
-        const displaySize = {
-            width: video.width,
-            height: video.height,
-        }
+    const displaySize = {
+        width: video.videoWidth,
+        height: video.videoHeight,
+    }
 
-        faceapi.matchDimensions(canvas, displaySize);
+    faceapi.matchDimensions(canvas, displaySize);
 
-        setTimeout(async function checkFace(){
-            const detections = await faceapi
-                .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({
-                    inputSize: 512, // Увеличиваем размер входного изображения для более дальнего обнаружения
-                    scoreThreshold: 0.1 // Устанавливаем нижний порог для точности детектора
-                }))
-                .withFaceLandmarks()
-                .withFaceDescriptors();
+    const detections = await faceapi
+        .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({
+            inputSize: 512, // Увеличиваем размер входного изображения для более дальнего обнаружения
+            scoreThreshold: 0.1 // Устанавливаем нижний порог для точности детектора
+        }))
+        .withFaceLandmarks()
+        .withFaceDescriptors();
 
-            const resizedDetections = faceapi.resizeResults(detections, displaySize);
-           
-            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
-            const results = resizedDetections.map(detection => {
-                return faceMatcher.findBestMatch(detection.descriptor);
-            })
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 
-            results.forEach((result, index) => {
-               console.log(result, "result");
-            })
-
-            setTimeout(checkFace, 5000);
-
-        }, 5000)
-
+    const results = resizedDetections.map(detection => {
+        return faceMatcher.findBestMatch(detection.descriptor);
     })
+
+    results.forEach(result => {
+        console.log(result, "result");
+    })
+
+
+    // video.addEventListener('playing', async () => {
+    //     console.log("played");
+        
+
+    //     setTimeout(async function checkFace(){
+           
+    //         setTimeout(checkFace, 5000);
+
+    //     }, 5000)
+
+    // })
 }
 
 

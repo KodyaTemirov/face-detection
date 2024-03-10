@@ -34,6 +34,7 @@ import {
 	rodriguesRotationVectorFromMatrix,
 } from '@utils/faceLandmarker';
 import { determineDirection } from '@utils/determineDirection';
+import {runModels, faceRecognition} from '@utils/faceSimilarity';
 
 const props = defineProps(['url']);
 const toast = useToast();
@@ -258,11 +259,18 @@ onMounted(async () => {
 		isActive.value = false;
 	};
 
-	await checkingOpenNewTab(faceDetectionStore.attempt_id);
-	checkingResizeWindow();
-	await setupFaceLandmarker();
-	await voiceDetectorStore.createAudioClassifier();
-	await voiceDetectorStore.runStreamingAudioClassification();
+	try {
+		await checkingOpenNewTab(faceDetectionStore.attempt_id);
+		checkingResizeWindow();
+		await setupFaceLandmarker();
+		await voiceDetectorStore.createAudioClassifier();
+		await voiceDetectorStore.runStreamingAudioClassification();
+		await runModels();
+	}
+	catch(error){
+		console.error(error);
+	}
+	
 
 	let lastVideoTime = -1;
 
@@ -319,6 +327,7 @@ onMounted(async () => {
 		const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 		webcam.value.srcObject = stream;
 		webcam.value.addEventListener('loadeddata', predictWebcam);
+		faceRecognition(faceDetectionStore.userMainImageURL);
 	} catch (error) {
 		console.error('Error accessing webcam:', error);
 	}
@@ -365,6 +374,7 @@ onBeforeUnmount(() => {
 						}"
 					>
 						<video
+							id="video"
 							class="clear-both block w-full h-full object-cover"
 							ref="webcam"
 							autoplay

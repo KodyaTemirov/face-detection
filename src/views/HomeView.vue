@@ -63,7 +63,7 @@ const fetchData = async () => {
 	}
 };
 
-onMounted(() => {
+onMounted(async () => {
 	fetchData();
 	socketStore.initWebSocket('ws://localhost:9061');
 });

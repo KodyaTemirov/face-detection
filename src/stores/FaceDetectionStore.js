@@ -2,8 +2,10 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
 import { useToast, POSITION } from 'vue-toastification';
-const apiUrl = import.meta.env.VITE_API_URL;
+import { imageURLtoBlob } from '@utils/imageURLtoBlob';
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
 const toast = useToast();
 
 export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
@@ -11,6 +13,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
 	const hasError = ref(null);
+	const userMainImageURL = ref(null);
 
 	const faceDetect = async (image, token, session_id) => {
 		const formData = new FormData();
@@ -28,10 +31,21 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 
 			if (!responseData.ai.status) {
 				throw new Error(responseData.ai.message);
-			} else if (responseData.ai.similarity > 0.26) {
+			} else if (responseData.ai.similarity > 0.30) {
 				throw new Error(`Rasmlar mos kelmadi. Qayta urinib ko'ring `);
 			} else {
-				isDetected.value = responseData.ai.similarity <= 0.26;
+				isDetected.value = responseData.ai.similarity <= 0.30;
+
+				if(isDetected.value){
+					// Если проверка пройдена, из ссылки берем данные картинки(file и base64 картинки) и записываем. Потом в странице тестирование картинку из потока сравниваем с этой картинкой  
+					try {
+						userMainImageURL.value = responseData.info.image1;
+					}
+					catch(error){
+						console.error(error);
+					}
+				}
+
 			}
 			similarity.value = responseData.ai.similarity;
 			attempt_id.value = responseData.create.id;
@@ -94,5 +108,5 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 		}
 	};
 
-	return { similarity, attempt_id, isDetected, faceDetect, faceUpdate };
+	return { similarity, attempt_id, isDetected, userMainImageURL, faceDetect, faceUpdate };
 });

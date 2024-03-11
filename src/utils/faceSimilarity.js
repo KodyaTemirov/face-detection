@@ -9,13 +9,12 @@ async function runModels(){
     ])
 }
 
-async function getLabeledFaceDescriptions(base64){
+async function getLabeledFaceDescriptions(image_url){
     return new Promise(async (resolve, reject) => {
        try{
             const image = new Image();
-            image.src = base64;
-            console.log(base64, "base64")
-            // image.crossOrigin = 'anonymous';
+            image.src = image_url;
+            image.crossOrigin = 'anonymous';
 
             image.onload = async () => {
                 const detections = await faceapi
@@ -42,8 +41,8 @@ async function getLabeledFaceDescriptions(base64){
 
 }
 
-async function faceRecognition(video, base64){
-    let labeledFaceDescriptors = await getLabeledFaceDescriptions(base64);
+async function faceRecognition(video, image_url){
+    let labeledFaceDescriptors = await getLabeledFaceDescriptions(image_url);
     let faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
 
     const canvas = faceapi.createCanvasFromMedia(video);

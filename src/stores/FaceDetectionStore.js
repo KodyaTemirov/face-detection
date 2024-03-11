@@ -38,9 +38,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 				isDetected.value = responseData.ai.similarity <= 0.30;
 
 				if(isDetected.value){
-					// Если проверка пройдена, из ссылки берем данные картинки(file и base64 картинки) и записываем. Потом в странице тестирование картинку из потока сравниваем с этой картинкой  
 					try {
-						userMainImageData.value = await imageURLtoBlob(responseData.info.image1);
 						userMainImageURL.value = responseData.info.image1;
 					}
 					catch(error){

@@ -194,7 +194,7 @@ const startIntervalDetect = () => {
 
 		if (!isDisrupted.value) {
 			// const photoData = await takePhoto(webcam, 218, 218);
-			faceRecognition(webcam.value, faceDetectionStore.userMainImageData.base64Image);
+			faceRecognition(webcam.value, faceDetectionStore.userMainImageURL);
 
 			// await faceDetectionStore.faceUpdate(
 			// 	photoData,

@@ -14,6 +14,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const isDetected = ref(null);
 	const hasError = ref(null);
 	const userMainImageURL = ref(null);
+	const userMainImageData = ref(null);
 
 	const faceDetect = async (image, token, session_id) => {
 		const formData = new FormData();
@@ -39,6 +40,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 				if(isDetected.value){
 					// Если проверка пройдена, из ссылки берем данные картинки(file и base64 картинки) и записываем. Потом в странице тестирование картинку из потока сравниваем с этой картинкой  
 					try {
+						userMainImageData.value = await imageURLtoBlob(responseData.info.image1);
 						userMainImageURL.value = responseData.info.image1;
 					}
 					catch(error){
@@ -108,5 +110,5 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 		}
 	};
 
-	return { similarity, attempt_id, isDetected, userMainImageURL, faceDetect, faceUpdate };
+	return { similarity, attempt_id, isDetected, userMainImageURL, userMainImageData, faceDetect, faceUpdate };
 });

@@ -1,11 +1,24 @@
 <script setup></script>
 
 <template>
-	<router-link
+	<div class="flex flex-col gap-3">
+		<router-link
 		to="/start?user_id=5424a4b0-1b38-4fb5-a3c2-9f8e8fcf8b0d&session_id=f2401ab8-5ec3-4604-9eed-c6cc8587ebd2"
 	>
-		Start
+		Qodirjon
 	</router-link>
+		<router-link
+			to="/start?user_id=550e8400-e29b-41d4-a716-446655440000&session_id=f2401ab8-5ec3-4604-9eed-c6cc8587ebd2"
+		>
+			Xurshid
+		</router-link>
+		<router-link
+			to="/start?user_id=87d5806c-ef4b-43bb-bf8d-c270f5f35f35&session_id=f2401ab8-5ec3-4604-9eed-c6cc8587ebd2"
+		>
+			Haydar aka
+		</router-link>
+	</div>
+	
 	<div class="text-center">
 		<p class="text-base font-semibold text-indigo-600">404</p>
 		<h1

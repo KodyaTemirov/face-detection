@@ -13,7 +13,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 	const attempt_id = ref(null);
 	const isDetected = ref(null);
 	const hasError = ref(null);
-	const userMainImageURL = ref(null);
+	const userImageBase64 = ref(null);
 	const userMainImageData = ref(null);
 
 	const faceDetect = async (image, token, session_id) => {
@@ -39,7 +39,7 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 
 				if(isDetected.value){
 					try {
-						userMainImageURL.value = responseData.info.image1;
+						userImageBase64.value = image;
 					}
 					catch(error){
 						console.error(error);
@@ -108,5 +108,5 @@ export const useFaceDetectionStore = defineStore('faceDetectionStore', () => {
 		}
 	};
 
-	return { similarity, attempt_id, isDetected, userMainImageURL, userMainImageData, faceDetect, faceUpdate };
+	return { similarity, attempt_id, isDetected, userImageBase64, faceDetect, faceUpdate };
 });

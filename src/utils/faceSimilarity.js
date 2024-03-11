@@ -9,30 +9,28 @@ async function runModels(){
     ])
 }
 
-async function getLabeledFaceDescriptions(image_url){
+async function getLabeledFaceDescriptions(base64){
     return new Promise(async (resolve, reject) => {
        try{
-            const image = new Image();
-            image.src = image_url;
-            image.crossOrigin = 'anonymous';
-
-            image.onload = async () => {
-                const detections = await faceapi
-                    .detectSingleFace(image)
+            const img = await faceapi.fetchImage(base64);
+            const detections = await faceapi
+                    .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
                     .withFaceLandmarks()
                     .withFaceDescriptor();
 
-                resolve(new faceapi.LabeledFaceDescriptors('Identified', [
-                    detections.descriptor
-                ]))
+                if(detections){
+                    resolve(new faceapi.LabeledFaceDescriptors('Identified', [
+                        detections.descriptor
+                    ]))
+                }
+                else{
+                    reject("Error upload image"); 
+                }
+                
             }
 
-            image.onabort = () => {
-                reject("Error upload image");
-            }
+          
         //    const image = await faceapi.fetchImage('./labels/haydaraka/q1.jpg');
-           
-       }
        catch(error){
            reject(error.message);
        }
@@ -41,8 +39,8 @@ async function getLabeledFaceDescriptions(image_url){
 
 }
 
-async function faceRecognition(video, image_url){
-    let labeledFaceDescriptors = await getLabeledFaceDescriptions(image_url);
+async function faceRecognition(video, base64){
+    let labeledFaceDescriptors = await getLabeledFaceDescriptions(base64);
     let faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
 
     const canvas = faceapi.createCanvasFromMedia(video);

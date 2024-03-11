@@ -14,6 +14,7 @@ async function getLabeledFaceDescriptions(image_url){
        try{
             const image = new Image();
             image.src = image_url;
+            image.crossOrigin = 'anonymous';
 
             image.onload = async () => {
                 const detections = await faceapi
